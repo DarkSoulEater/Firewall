@@ -13,8 +13,8 @@
 
 int main() {
     try {
-        Socket eth0("eth0", 0);
-        Socket eth1("eth1", 0);
+        Socket eth0("eth0");
+        Socket eth1("eth1");
 
         pid_t pid = fork();
         switch (pid) {

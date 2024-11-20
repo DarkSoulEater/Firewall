@@ -10,7 +10,7 @@
 #include <iostream>
 #include <format>
 
-Socket::Socket(const char *intf, int port) {
+Socket::Socket(const char *intf) {
     fd_ = socket(AF_PACKET, SOCK_RAW, htons(ETH_P_ALL));
     if (fd_ < 0) {
         throw std::runtime_error(std::format("socket: {}", strerror(errno)));

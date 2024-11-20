@@ -4,7 +4,7 @@
 
 class Socket {
   public:
-    Socket(const char* intf, int port);
+    Socket(const char* intf);
     ~Socket();
 
     Buffer Read();
