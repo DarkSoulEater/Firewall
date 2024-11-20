@@ -10,6 +10,8 @@ class Socket {
     Buffer Read();
     void Write(Buffer& data);
 
+    const char* IntfName() const { return conf_.name; }
+
   private:
     int fd_;
     

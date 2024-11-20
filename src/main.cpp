@@ -10,11 +10,36 @@
 #include <unistd.h>
 #include <socket.hpp>
 #include <format>
+#include "filter.hpp"
 
-int main() {
+struct Args {
+    const char* inrf0;
+    const char* inrf1;
+    const char* rule_path;
+};
+
+
+Args ParseArgs(int argc, const char* argv[]) {
+    if (argc != 4) {
+        std::cout << "Uasge: Firewall <Interface name 0> <Interface name 1> <Path to rules file>\n";
+        std::runtime_error("Uncorrect arguments");
+    }
+
+    return Args({
+        argv[1],
+        argv[2],
+        argv[3],
+    });
+}
+
+int main(int argc, const char* argv[]) {
     try {
-        Socket eth0("eth0");
-        Socket eth1("eth1");
+        auto args = ParseArgs(argc, argv);
+
+        Filter filter(args.rule_path);
+
+        Socket eth0(args.inrf0);
+        Socket eth1(args.inrf1);
 
         pid_t pid = fork();
         switch (pid) {
@@ -24,25 +49,13 @@ int main() {
 
         case 0: {
             while (true) {
-                auto data = eth0.Read();
-                std::cout << "From eth0 to eth1:\n";
-                for (int k = 0; k < data.Size(); ++k) {
-                    std::cout << std::format("{:02x} ", data.Data()[k]);
-                }
-                std::cout << "\n";
-                eth1.Write(data);
+                Bridge(eth0, eth1, filter);
             }
         } break;
         
         default:
             while (true) {
-                auto data = eth1.Read();
-                std::cout << "From eth1 to eth0:\n";
-                for (int k = 0; k < data.Size(); ++k) {
-                    std::cout << std::format("{:02x} ", data.Data()[k]);
-                }
-                std::cout << "\n";
-                eth0.Write(data);
+                Bridge(eth1, eth0, filter);
             }
             break;
         }

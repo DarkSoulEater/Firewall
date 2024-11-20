@@ -36,9 +36,7 @@ Socket::~Socket(){
 }
 
 Buffer Socket::Read() {
-    std::cerr << "OK1\n";
     Buffer data(conf_.mtu + 10);
-    std::cerr << "OK2\n";
     ssize_t rcnt = read(fd_, data.Data(), data.Capacity());
     if (rcnt <= 0) {
         return data;

@@ -2,3 +2,4 @@ run.sh
 .vscode/*
 bin/*
 build-debug/*
+rule_example.txt
